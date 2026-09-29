@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface WishlistItemRepository extends JpaRepository<WishlistItem,UUID>{List<WishlistItem> findAllByUser(User user); Optional<WishlistItem> findByUserAndProduct(User user,Product product);}

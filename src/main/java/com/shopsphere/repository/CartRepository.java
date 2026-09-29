@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.Cart; import com.shopsphere.entity.User; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface CartRepository extends JpaRepository<Cart,UUID>{Optional<Cart> findByUser(User user);}

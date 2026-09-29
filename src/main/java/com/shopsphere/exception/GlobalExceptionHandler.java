@@ -1,0 +1,8 @@
+package com.shopsphere.exception;
+import jakarta.servlet.http.HttpServletRequest; import jakarta.validation.ConstraintViolationException; import org.springframework.http.*; import org.springframework.web.bind.MethodArgumentNotValidException; import org.springframework.web.bind.annotation.*; import java.time.Instant; import java.util.*;
+@RestControllerAdvice public class GlobalExceptionHandler { record ErrorResponse(Instant timestamp,int status,String error,String code,String message,String path){}
+ @ExceptionHandler(ApiException.class) ResponseEntity<ErrorResponse> api(ApiException e,HttpServletRequest r){return ResponseEntity.badRequest().body(new ErrorResponse(Instant.now(),400,"Bad Request",e.getCode(),e.getMessage(),r.getRequestURI()));}
+ @ExceptionHandler(MethodArgumentNotValidException.class) ResponseEntity<ErrorResponse> validation(MethodArgumentNotValidException e,HttpServletRequest r){String m=e.getBindingResult().getFieldErrors().stream().map(x->x.getField()+": "+x.getDefaultMessage()).findFirst().orElse("Validation failed");return ResponseEntity.badRequest().body(new ErrorResponse(Instant.now(),400,"Bad Request","VALIDATION_ERROR",m,r.getRequestURI()));}
+ @ExceptionHandler({ConstraintViolationException.class,IllegalArgumentException.class}) ResponseEntity<ErrorResponse> bad(Exception e,HttpServletRequest r){return ResponseEntity.badRequest().body(new ErrorResponse(Instant.now(),400,"Bad Request","BAD_REQUEST",e.getMessage(),r.getRequestURI()));}
+ @ExceptionHandler(Exception.class) ResponseEntity<ErrorResponse> other(Exception e,HttpServletRequest r){return ResponseEntity.status(500).body(new ErrorResponse(Instant.now(),500,"Internal Server Error","INTERNAL_ERROR","Unexpected server error",r.getRequestURI()));}
+}

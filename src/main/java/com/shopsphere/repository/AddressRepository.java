@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface AddressRepository extends JpaRepository<Address,UUID>{List<Address> findAllByUser(User user); Optional<Address> findByIdAndUser(UUID id,User user);}

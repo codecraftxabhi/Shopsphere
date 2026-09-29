@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface PaymentRepository extends JpaRepository<Payment,UUID>{Optional<Payment> findByReference(String reference); Optional<Payment> findByOrder(Order order);}

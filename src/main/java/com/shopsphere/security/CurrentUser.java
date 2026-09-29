@@ -1,0 +1,3 @@
+package com.shopsphere.security;
+import com.shopsphere.entity.User; import com.shopsphere.repository.UserRepository; import org.springframework.security.core.Authentication; import org.springframework.stereotype.Component; import java.util.*;
+@Component public class CurrentUser { private final UserRepository users; public CurrentUser(UserRepository users){this.users=users;} public User get(Authentication a){ if(a==null||a.getName()==null) throw new IllegalStateException("Authentication required"); return users.findById(UUID.fromString(a.getName())).orElseThrow(()->new IllegalStateException("User not found")); } }

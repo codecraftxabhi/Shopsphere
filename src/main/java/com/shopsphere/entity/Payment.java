@@ -1,0 +1,4 @@
+package com.shopsphere.entity;
+import jakarta.persistence.*; import java.math.BigDecimal;
+@Entity @Table(name="payments") public class Payment extends BaseEntity { @OneToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="order_id",unique=true) private Order order; @Column(nullable=false,unique=true) private String reference; @Enumerated(EnumType.STRING) @Column(nullable=false) private PaymentStatus status=PaymentStatus.CREATED; @Column(nullable=false,precision=12,scale=2) private BigDecimal amount;
+ public Order getOrder(){return order;} public void setOrder(Order v){order=v;} public String getReference(){return reference;} public void setReference(String v){reference=v;} public PaymentStatus getStatus(){return status;} public void setStatus(PaymentStatus v){status=v;} public BigDecimal getAmount(){return amount;} public void setAmount(BigDecimal v){amount=v;}}

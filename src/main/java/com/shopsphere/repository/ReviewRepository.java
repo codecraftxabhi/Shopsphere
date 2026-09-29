@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface ReviewRepository extends JpaRepository<Review,UUID>{List<Review> findAllByProduct(Product product); boolean existsByUserAndProduct(User user,Product product);}

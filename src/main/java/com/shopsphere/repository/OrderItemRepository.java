@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.OrderItem; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface OrderItemRepository extends JpaRepository<OrderItem,UUID>{List<OrderItem> findAllByOrder(com.shopsphere.entity.Order order);}

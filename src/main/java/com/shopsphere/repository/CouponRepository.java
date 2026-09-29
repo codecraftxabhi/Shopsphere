@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.Coupon; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface CouponRepository extends JpaRepository<Coupon,UUID>{Optional<Coupon> findByCodeIgnoreCase(String code);}

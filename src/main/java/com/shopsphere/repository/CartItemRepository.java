@@ -1,0 +1,1 @@
+package com.shopsphere.repository; import com.shopsphere.entity.*; import java.util.*; import org.springframework.data.jpa.repository.JpaRepository; public interface CartItemRepository extends JpaRepository<CartItem,UUID>{Optional<CartItem> findByCartAndProduct(Cart cart,Product product); List<CartItem> findAllByCart(Cart cart); void deleteAllByCart(Cart cart);}

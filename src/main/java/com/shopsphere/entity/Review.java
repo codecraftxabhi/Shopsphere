@@ -1,0 +1,4 @@
+package com.shopsphere.entity;
+import jakarta.persistence.*;
+@Entity @Table(name="reviews",uniqueConstraints=@UniqueConstraint(columnNames={"user_id","product_id"})) public class Review extends BaseEntity { @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="user_id") private User user; @ManyToOne(fetch=FetchType.LAZY,optional=false) @JoinColumn(name="product_id") private Product product; @Column(nullable=false) private int rating; @Column(columnDefinition="text") private String comment;
+ public User getUser(){return user;} public void setUser(User v){user=v;} public Product getProduct(){return product;} public void setProduct(Product v){product=v;} public int getRating(){return rating;} public void setRating(int v){rating=v;} public String getComment(){return comment;} public void setComment(String v){comment=v;}}

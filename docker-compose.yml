@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: shopsphere-postgres
+    environment:
+      POSTGRES_DB: shopsphere
+      POSTGRES_USER: shopsphere
+      POSTGRES_PASSWORD: shopsphere
+    ports: ["5432:5432"]
+    volumes: [shopsphere_pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopsphere -d shopsphere"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:8-alpine
+    container_name: shopsphere-redis
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  app:
+    build: .
+    container_name: shopsphere-app
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/shopsphere
+      DB_USERNAME: shopsphere
+      DB_PASSWORD: shopsphere
+      REDIS_HOST: redis
+      JWT_SECRET: change-this-in-production-to-a-real-secret-with-32-plus-chars
+    ports: ["8080:8080"]
+volumes:
+  shopsphere_pgdata:

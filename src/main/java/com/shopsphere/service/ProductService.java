@@ -1,0 +1,10 @@
+package com.shopsphere.service;
+import com.shopsphere.dto.AuthDtos.*; import com.shopsphere.entity.*; import com.shopsphere.exception.ApiException; import com.shopsphere.repository.*; import org.springframework.cache.annotation.CacheEvict; import org.springframework.cache.annotation.Cacheable; import org.springframework.data.domain.*; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import java.util.*;
+@Service public class ProductService { private final ProductRepository products; private final CategoryRepository categories; private final InventoryRepository inventory;
+ public ProductService(ProductRepository p,CategoryRepository c,InventoryRepository i){products=p;categories=c;inventory=i;}
+ @Transactional(readOnly=true) public Page<ProductResponse> search(String q,UUID categoryId,Pageable page){return products.search(q,categoryId,page).map(this::response);}
+ @Cacheable(cacheNames="products",key="#id") @Transactional(readOnly=true) public ProductResponse get(UUID id){return response(products.findById(id).filter(Product::isActive).orElseThrow(()->new ApiException("PRODUCT_NOT_FOUND","Product not found")));}
+ @Transactional public ProductResponse create(ProductRequest r){Category c=categories.findById(r.categoryId()).orElseThrow(()->new ApiException("CATEGORY_NOT_FOUND","Category not found"));Product p=new Product();p.setName(r.name());p.setSlug(r.slug());p.setDescription(r.description());p.setPrice(r.price());p.setCategory(c);products.save(p);Inventory i=new Inventory();i.setProduct(p);i.setQuantity(r.stock());inventory.save(i);return response(p);}
+ @CacheEvict(cacheNames="products",key="#id") @Transactional public void delete(UUID id){Product p=products.findById(id).orElseThrow(()->new ApiException("PRODUCT_NOT_FOUND","Product not found"));p.setActive(false);}
+ private ProductResponse response(Product p){int stock=inventory.findByProductId(p.getId()).map(Inventory::getQuantity).orElse(0);return new ProductResponse(p.getId(),p.getName(),p.getSlug(),p.getDescription(),p.getPrice(),p.isActive(),p.getCategory().getId(),p.getCategory().getName(),stock);}
+}
